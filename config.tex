@@ -11,6 +11,15 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{tikz-cd}
+\usepackage{lipsum}
+%\usepackage{hyperref}
+
+\newcommand\blfootnote[1]{%
+    \begingroup
+    \renewcommand\thefootnote{}\footnote{#1}%
+    \addtocounter{footnote}{-1}%
+    \endgroup
+}
 
 % Specify theme
 %\usetheme{Madrid} %Theme that came with example
