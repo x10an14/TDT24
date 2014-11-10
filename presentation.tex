@@ -6,7 +6,7 @@
 \title[Compiler Offloading]{TDT24 Paper presentation}
 
 % Denne kan du også bruke hvis det passer seg:
-\subtitle{\textit{Offload Compiler Runtime for the Intel Xeon Phi Coprocessor}
+\subtitle{\textit{Offload Compiler Runtime for the Intel\textregistered Xeon Phi\texttrademark Coprocessor}
 \newline C.J. Newton, R. Deodhar, S. Dmitriev, et al.; Intel 2013}
 
 % Institusjon. Bruk gjerne disse slik det passer best med det du vil
@@ -16,7 +16,10 @@
 %\date{13. juni 2005}
 \date[November 2014]{\today} % Bruk denne hvis du ikke vil ha noe dato på forsida.
 
+
 \begin{document}
+\bibliographystyle{IEEEtran}
+\nocite{DBLP:conf/ipps/NewburnDNWMCDM13, xkcd:compiling}
 
 % Siden NTNU-malen har en annen bakgrunn på forsida, må dette gjøres
 % i en egen kommando, ikke på vanlig beamer-måte:
@@ -182,12 +185,8 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Sources}
-    \begin{itemize}
-        \item \textit{Offload Compiler Runtime for the Intel\circledR  Xeon Phi\texttrademark  Coprocessor}, Newton, R.
-Deodhar, S. Dmitriev, et al.\footnote{\url{https://software.intel.com/sites/default/files/article/366893/offload-runtime-for-the-intelr-xeon-phitm-coprocessor.pdf}}
-        \item Randall Munroe, xkcd\footnote{\url{http://xkcd.com/303/}}
-    \end{itemize}
+\begin{frame}{Bibliography}
+    \bibliography{bibliography}
 \end{frame}
 
 \end{document}
