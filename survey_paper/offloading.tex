@@ -1,0 +1,95 @@
+% !TEX root = ./survey_paper.tex
+
+\section{CPU and Accelerator Offloading}
+\label{sec:offloading}
+
+This section introduces Offloading, by first explaining the term, before explaining how parallel programs implement this, and their difficulties and limitations.
+Thereafter, we summarize the paper of Byun \textit{et al.}\cite{Byun:EECS-2012-215}, and explain how they offload the CPU, before we turn to Newburn \textit{et al.}\cite{Newburn:2013:OCR:2510648.2511038}, and summarize how they do it in a different manner.
+
+Offloading is the alleviation of the workload of a program normally/otherwise run on a single agent, by having multiple sub-cores of the CPU, CPUs, or other processing units entirely execute some of the workload.
+By spreading the load, only possible with parallel programs, the total execution time of the program can be diminished, even with the bottlenecks from the ``Brick Wall'' affecting each CPU or CPU core (hereafter referred to as ``agents'', to avoid discriminating other processing units).
+
+Rather, if we generalize a simplified optimum case, one can propose that the amount of agents $P$, the time spent executing the program on a single agent $T_1$, gives the formula for the speedup gained by executing with the load distributed across $P$ agents to be $S_P = T_1/P$.
+
+\subsection{Implementing Parallelism}
+
+However, since the formula $S_P = T_1/P$ is a simplified generalization of the optimum case, it gives a wrongful representation of $T_P$.
+While a program running on $P$ agents may approach the speedup given by $T_1/P$, it can never be equal to this, since then we would actually be running $P$ completely independent programs.
+Thus, Amdahl\cite{Amdahl:1967:VSP:1465482.1465560} proposed that each program needs to have a sequential part, such as the summing of the local sums from each agent in a parallel programming calculating a sum to a final result.
+
+This gave rise to \textit{Amdahl's Law}, which states that the theoretical max speedup of a parallel program becomes the sequential part, plus the parallel part divided by the amount of agents (e.g. CPUs) executing the parallel part simultaneously.
+Hence, Amdahl's law gives the formula $S_P \leq P/((P-1)T_S + 1)$, with $P$, $T_1$, $T_P$ representing the same as previously given, and $T_S$ the time it takes to execute the sequential parts of the program.
+
+Amdahl's law gives a bleak estimate of how much parallelizing a program can help its execution time.
+However, this bleak estimate is with one caveat, and that is that the formula pre-supposes a \textit{fixed} problem size speedup.
+
+This did not escape the notice of Gustafson\cite{Gustafson:1988:RAL:42411.42415}, who proposed a new formula for calculating the theoretical max speedup of a parallel implementation, but with \textit{fixed} time and variable problem size speedup, as opposed to Amdahl's law.
+Hence, \textit{Gustafson's Law} gives the formula: $S_P = P - T_S(P-1)$.
+
+Thus parallelizing programs still had more benefits to give, beyond what Amdahl's law proposed, as long as they increased the problem size along with the size of $P$.
+
+\textit{Sun and Ni's Law}\cite{Sun:1990:VPS:110382.110450,Sun2010183} proposes a third way to look at speedup in parallel programs, and that is $memory bounded$ speedup.
+
+Start by supposing that $f$ is the portion of workload that can be parallelized, and $(1-f)$ the sequential part.
+
+Given a memory bound function $G(n)$ representing the influence of memory change on the change in problem size, Sun and Ni's law give the following formula for calculating the speedup: $S_P = ((1-f)+f\times G(n))/((1-f)+\frac{f\times G(n)}{n})$.
+
+If $G(n)=1$ (our $G(n)$ being the function $\overline{g}(m)$ in Sun and Chen\cite{Sun2010183}), then the memory bounded speedup model reduces to Amdahl's law, since the problem size is fixed, or independent of resource increase.
+If $G(n)=n$, then the memory bounded speedup model reduces to Gustafson's law, which means that when memory capacity increases $m$ times, and the workload also increases $m$ times, all the data needed is local to every node in the system.
+
+Thus, Sun and Ni's law directly relates to, and shows how to solve, the ``Memory Wall'' explained in Section~\ref{sec:background}, on a parallel system with homogeneous agents.
+
+\subsection{Offloading through Threads}
+
+A CPU can run a program in parallel in several ways.
+It may have multiple cores, which each can run a process/program concurrently.
+In addition, a CPU core may have multiple threads running concurrently, depending on the hardware available.
+As such, the first parallel optimizations we report utilize threads and cores to enable their parallelism.
+
+Byun \textit{et al.}\cite{Byun:EECS-2012-215} proposes a new parallel system: ``pOSKI'', which is a parallelization of the SpMV autotuning framework ``OSKI''.
+SpMV performs traditionally poorly on single-core agents, due to the irregular memory accesses and the ``Memory Wall''.
+
+Parallel ``Oski'' (``pOSKI''), utilizes beforehand tuning knowledge to select proper compilation parameters, loop unrolling, and variable sizes to optimize the code, though this optimizations are also applicable on a single-core system.
+On the other hand, mapping blocks of a matrix to singular threads running concurrently on a CPU, using \textit{Non-Uniform Memory Access} (NUMA) aware mapping of the matrix partitions to cores, and utilizing SIMD intrinsics to fully utilize the available ALUs to concurrently calculate more than one arithmetic operation, are parallel optimizations described in the report as utilized.
+
+While Byun \textit{et al.}\cite{Byun:EECS-2012-215} are among the more specialized papers in this survey, they do offer insights into the applicability of their parallel optimizations, noting that they do not always result in a speedup.
+
+\subsection{Shared Memory vs Distributed Memory}
+
+When discussing parallel programs, it's often important to mention whether the algorithm utilized by the program is implemented with regards to shared or distributed memory.
+
+Besides the other technologies introduced in this paper, there are two widely used technologies which we will not discuss in any other section, that are still worth mentioning.
+
+\begin{itemize}
+	\item{Shared Memory:}
+	Shared memory is when an multiple agents share the same memory during execution. Such as threads using the same process memory in a CPU core.
+	Threads are most commonly the technology referred to when discussing shared memory, and Pthreads, OpenMP, Intel's Building Blocks\texttrademark (TBB) are among the most used technologies to program algorithms relying on shared memory.
+	\item{Distributed Memory:}
+		Distributed memory however is when each agent has its own memory, inaccessible to other agents.
+		CPUs being a good example of this model, MPI are among the most, of not the most known technology utilized when writing programs relying on the distributed memory model.
+		It is however worth noticing that the two models are not mutually exclusive.
+		There is often much that can be gained, especially on CPUs, when the two are technologies and memory models combine their strengths.
+\end{itemize}
+
+\subsection{Offloading through Accelerators}
+
+The use of additional processing units has been a part of computer history, for as long as computers have had a history.
+In the beginning processing units were highly specialized, but over time the CPU emerged, and started to handle a wide array of different applications/programs.
+
+In the early years of ``external'' processing units connected to the motherboard containing the CPU, were more often than not Graphic Processing Units (GPUs).
+This was because of the heavy load graphical applications put on the CPU, and thereby slowed the whole system down.
+
+With Moore's law making the construction of more complex GPUs cheaper, and the discovery of better graphical algorithms, GPUs rose as the forefront example of accelerators available to more than the select few, very rich, companies.
+
+In later years, since the mid 2000s, GPUs have been promoted as General Purpose GPUs (GPGPUs), which with their efficient and cost-effective vector-operations can perform many more concurrent tasks concurrently than a CPU, given that the tasks are very similar to one another.
+
+While Intel was not the first on the market with GPGPUs, they have focused heavily on the Intel Xeon Phi\texttrademark.
+
+Newburn \textit{et al.}\cite{Newburn:2013:OCR:2510648.2511038} describe the utilization of, and evaluate the Intel Xeon Phi with several typical calculation heavy benchmarks with speedup comparison to only running on the CPU.
+
+While the transfer of memory to and from externally connected processing units such as GPGPUs on the PCI-Express bus is how the ``Memory Wall'' makes itself known to GPGPUs,
+the paper of Newburn \textit{et al.} shows that if the effort is made to write programs which implement the use of Xeon Phis, especially those that may be calculation heavy like Seismic, Astronomic, Physics, or Financial applications, can benefit from the use of a Xeon Phi.
+
+The Xeon Phi does stand apart from the typical GPGPU, such as those of Nvidia and AMD, by virtue of being able to be utilized in the compilation of code.
+
+However, much like CUDA introduced in Section~\ref{sec:nvidia} and OpenCL introduced in Section~\ref{sec:opencl}, the advantages of Intel's Xeon Phi heavily rely on the programmer utilizing the tools made available through the compiler.
