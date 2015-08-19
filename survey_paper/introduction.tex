@@ -1,6 +1,29 @@
 % !TEX root = ./survey_paper.tex
 
 \section{Introduction}
+\label{sec:intro}
 
-\IEEEPARstart{T}{he} GPU has long been used to alleviate the workload needed for image processing, so as to free the CPU to perform other tasks.
+\IEEEPARstart{W}{ith} the introduction of Moore's Law\cite{Moore:2000:CMC:333067.333074}, computing power increased exponentially for decades.
+This has been possible due to the ever-increasing amount of components (transistors) technology has been able to cram into the same processor die area.
 
+However, this trend is coming, if it has not already, to an end, due to the physical limits of miniaturized electronics.
+
+Hence, new challenges in continuing this exponential growth in computing power have arisen.
+Manferdelli \textit{et al.}\cite{4484943} introduce these new problems as three ``walls'', which together form the wall coined the ``Brick Wall''.
+The ``Brick Wall'' consists of the ``Power/Heat Wall'', the ``ILP Wall'', and the ``Memory Wall''.
+Section~\ref{sec:background} describes these walls and their impacts on HPC and parallel programming in greater detail.
+
+Section~\ref{sec:offloading} continues the report by detailing examples on how multiple CPU cores have been utilized to bypass these walls, through utilizing multiple cores to offloading work from the main CPU/CPU-core.
+Byun \textit{et al.}\cite{Byun:EECS-2012-215} and Newburn \textit{et al.}\cite{Newburn:2013:OCR:2510648.2511038} both offload work from the main CPU core, but they do so in two different ways.
+
+With the introduction of GPGPU-offloading with the Intel Xeon Phi\texttrademark in Section~\ref{sec:offloading}, the report continues by introducing one of the most utilized GPU offloading technologies in Section~\ref{sec:nvidia}.
+Section~\ref{sec:nvidia} first introduces Nvidia's technology CUDA\texttrademark, and then describes how some papers have utilized it to achieve higher computing throughput of select applications.
+
+Thereafter the report continues with introducing a second well-known heterogeneous computing language in Section~\ref{sec:opencl}.
+This section introduces OpenCL\texttrademark, a language/technology meant to address the ease of using multiple architectures to run the same application.
+Section~\ref{sec:opencl} also introduces an optimization utilized by the LLVM compiler when writing OpenCL, relevant to multi-threaded architectures.
+
+Lastly, in surveying different technologies enabling CPU-Offloading, Section~\ref{sec:mali} introduces ARM's contribution to Energy-Efficient HPC.
+ARM has in recent years introduced their Mali architectures, designed to compete with Nvidia's CUDA and Intel's Xeon Phi's in the HPC market, especially since the power cost of keeping HPC centers running tend to exceed their initial cost after a few years.
+
+Finally, in Section~\ref{sec:summary} we summarize the technologies reported in this survey paper, and correlate them to the which parts of the ``Brick Wall'' these try to conquer.

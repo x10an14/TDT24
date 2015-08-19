@@ -1,17 +1,16 @@
-\documentclass[a4paper,journal]{IEEEtran}
+\documentclass[a4paper,journal,12pt]{IEEEtran}
 \input{config}
 
-\newcommand{\surveyPaperTitle}{\textit{Survey of Technologies Utilized in GPGPU- and Accelerator- Offloading}}
+\newcommand{\surveyPaperTitle}{\textit{Survey of Technologies enabling CPU Offloading presented in TDT24} \\ {\large Courseyear 2014, Exam 2015}}
 
 \begin{document}
 \title{\surveyPaperTitle}
 
-\author{~Christian~Chavez,\\
-chrischa@stud.ntnu.no\\
-\IEEEmembership{Student, NTNU}}
+\author{Christian~Chavez, chrischa@stud.ntnu.no\\
+\IEEEmembership{Student, NTNU} \\ Trondheim, Norway}
 
 % The paper headers
-\markboth{\surveyPaperTitle,~TDT24,~August~2015\hfill chrischa \hspace*{0.5cm}}{}
+\markboth{TDT24,~August~2015\hfill chrischa \hspace*{0.5cm}}{}
 
 % make the title area
 \maketitle
@@ -22,6 +21,14 @@ GPU, GPGPU, Offloading, NTNU, TDT24, 2015, Parallel Environments and Numerical C
 
 \input{abstract}
 \input{introduction}
+\input{background}
+
+\input{offloading}
+\input{nvidia}
+\input{opencl}
+\input{mali}
+
+% Conclusion
 \input{summary}
 
 \bibliography{bibliography}
