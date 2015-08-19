@@ -20,6 +20,10 @@ With Moore's law making the construction of more complex GPUs cheaper, and the d
 
 In later years, since the mid 2000s, GPUs have been promoted as General Purpose GPUs (GPGPUs), which with their efficient and cost-effective vector-operations can perform many more concurrent tasks concurrently than a CPU, given that the tasks performed are very similar to one another.
 
+With regards to the ``Brick Wall'', GPGPUs avoid the ``Power/Heat Wall'' by specializing in vector instructions, hiding their latencies behind the amount of operations they can perform in a clock cycle.
+The ``ILP Wall'' is easily avoided, by the vectorization implicitly requiring that the programs that run efficiently on GPGPUs to exploit ``flat data parallism'' to gain speedups over regular CPUs.
+Finally, the ``Memory Wall'', which poses the biggest ``threat'' to GPGPU's speedups over regular CPUs, is mainly overcome by optimizing the CPU-GPU transfers through techniques such as \textit{memory coalescing}, in addition to the programs requiring sufficient computations per data-element, which can be executed faster on the vectorized GPGPU, to hide the memory latencies.
+
 \subsection{CUDA Intro}
 
 CUDA, an acronym for for \textit{Compute Unified Device Architecture}, is an API and a parallel computing platform utilized on Nvidia GPUs, created by Nvidia.
