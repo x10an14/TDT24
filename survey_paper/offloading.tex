@@ -34,10 +34,10 @@ Thus parallelizing programs still had more benefits to give, beyond what Amdahl'
 
 Start by supposing that $f$ is the portion of workload that can be parallelized, and $(1-f)$ the sequential part.
 
-Given a memory bound function $G(n)$ representing the influence of memory change on the change in problem size, Sun and Ni's law give the following formula for calculating the speedup: $S_P = ((1-f)+f\times G(n))/((1-f)+\frac{f\times G(n)}{n})$.
+Given a memory bound function $G(P)$ representing the influence of memory change on the change in problem size, Sun and Ni's law give the following formula for calculating the speedup: $S_P = ((1-f)+f\times G(P))/((1-f)+\frac{f\times G(P)}{P})$.
 
-If $G(n)=1$ (our $G(n)$ being the function $\overline{g}(m)$ in Sun and Chen\cite{Sun2010183}), then the memory bounded speedup model reduces to Amdahl's law, since the problem size is fixed, or independent of resource increase.
-If $G(n)=n$, then the memory bounded speedup model reduces to Gustafson's law, which means that when memory capacity increases $m$ times, and the workload also increases $m$ times, all the data needed is local to every node in the system.
+If $G(P)=1$ (our $G(P)$ being the function $\overline{g}(m)$ in Sun and Chen\cite{Sun2010183}), then the memory bounded speedup model reduces to Amdahl's law, since the problem size is fixed, or independent of resource increase.
+If $G(P)=n$, then the memory bounded speedup model reduces to Gustafson's law, which means that when memory capacity increases $m$ times, and the workload also increases $m$ times, all the data needed is local to every node in the system.
 
 Thus, Sun and Ni's law directly relates to, and shows how to solve, the ``Memory Wall'' explained in Section~\ref{sec:background}, on a parallel system with homogeneous agents.
 
@@ -56,6 +56,8 @@ On the other hand, mapping blocks of a matrix to singular threads running concur
 
 While Byun \textit{et al.}\cite{Byun:EECS-2012-215} are among the more specialized papers in this survey, they do offer insights into the applicability of their parallel optimizations, noting that they do not always result in a speedup.
 
+Their results are gathered from experiments on several different architectures and configurations, with numbers as high as 8.3x faster than the serial OSKI implementation, and as slow as 1.3x and 1.2x slower than the parallel Intel MKL and OpenMP implementations of the same SpMV on their test setups.
+
 \subsection{Shared Memory vs Distributed Memory}
 
 When discussing parallel programs, it's often important to mention whether the algorithm utilized by the program is implemented with regards to shared or distributed memory.
@@ -70,5 +72,5 @@ Besides the other technologies introduced in this paper, there are two widely us
 		Distributed memory however is when each agent has its own memory, inaccessible to other agents.
 		CPUs being a good example of this model, MPI are among the most, of not the most known technology utilized when writing programs relying on the distributed memory model.
 		It is however worth noticing that the two models are not mutually exclusive.
-		There is often much that can be gained, especially on CPUs, when the two are technologies and memory models combine their strengths.
+		There is often much that can be gained, especially on CPUs, when the two technologies and memory models combine their strengths.
 \end{itemize}

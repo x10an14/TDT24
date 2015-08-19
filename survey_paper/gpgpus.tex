@@ -18,9 +18,60 @@ This was because of the heavy load graphical applications put on the CPU, and th
 
 With Moore's law making the construction of more complex GPUs cheaper, and the discovery of better graphical algorithms, GPUs rose as the forefront example of accelerators available to more than the select few, very rich, companies.
 
-In later years, since the mid 2000s, GPUs have been promoted as General Purpose GPUs (GPGPUs), which with their efficient and cost-effective vector-operations can perform many more concurrent tasks concurrently than a CPU, given that the tasks are very similar to one another.
+In later years, since the mid 2000s, GPUs have been promoted as General Purpose GPUs (GPGPUs), which with their efficient and cost-effective vector-operations can perform many more concurrent tasks concurrently than a CPU, given that the tasks performed are very similar to one another.
 
-\subsection{CUDA}
+\subsection{CUDA Intro}
+
+CUDA, an acronym for for \textit{Compute Unified Device Architecture}, is an API and a parallel computing platform utilized on Nvidia GPUs, created by Nvidia.
+CUDA works as a language extension to the programming languages C, C++, and Fortran, which with its own compiler can generate programs which can be run by Nvidia's GPGPUs.
+
+CUDA was the first widely used GPGPU platform on the market, and replaced advanced API solutions like Direct3D and OpenGL.
+Support for OpenACC and OpenCL is also given by the CUDA platform.
+
+CUDA utilizes and relies on the \textit{Single Program Multiple Data} paradigm, meaning that there is one program which utilizes the GPGPU for several smaller \textit{kernels} within the program, which are intended to run multiple executions of instructions from subsections of the programs algorithm on the GPU on multiple elements of data.
+
+The CUDA GPGPUs work by having a radically different processing architecture than typical CPUs.
+Instead of having deep pipelines, lots of caches, prefetching, and Out-of-Order execution, Nvidia's GPU architectures focuses on vectorizing lots of threads to hide their lack of the aforementioned CPU hardware optimizations.
+
+Each GPGPU supports a certain number of \textit{Streaming Multiprocessors} (SMs).
+Each SM supports the concurrent execution of a max number of threads, divided by blocks. In Nvidia, threads perform instructions in lockstep by multiples of 32, with 32 threads being called a ``warp''.
+The invocation of a CUDA kernel to be executed on an Nvidia GPGPU is prefixed by the amount of blocks (and potentially their distribution across up to three dimensions), and amount of threads (also potentially distributed across up to three dimensions).
+
+Thus, each invocation of a CUDA kernel will be scheduled to run as many of the available blocks concurrently as possible, with the scheduling executing any remaining blocks as resources become available.
+
+In CUDA, especially in later architecture generations of Nvidia's GPGPUs, several different types of memory are available to the kernels executed on the GPU.
+While each SM has registers which their threads can use, instead of having caches, they have a large, slow global memory, a faster, read-only constant memory, and a small read/write shared memory, which all the threads in an SM share.
+
+Thus, the kernels with the higher throughputs written in CUDA utilize all layers of memory according to their strengths, use memory coalescing with the vectorized threads, and diminish branching within warps, so as to avoid divergent threads in CUDA, among other optimizations.
+
+Suda \textit{et al.}\cite{Suda:2009:AGG:1509633.1509696} realizes that the ``Power (Heat) Wall'' poses a limitation on supercomputer's design, they experiment with GPUs which have a much better power-performance ratio than conventional CPUs.
+
+They note that while one of the bigger challenges of achieving speedups through the use of GPUs is the latency of CPU-GPU data transfers, the performance metrics between GPUs and the T2K supercomputer at the University of Tokyo are not different by an order of magnitude.
+
+The four main differences between GPUs and current supercomputers they point out are:
+\begin{itemize}
+	\item{SIMD vector length:}
+	Of which the GPU has a lot more
+	\item{Memory Size:}
+	Of which the GPU has a lot less compared to systems of RAM and CPUs.
+	\item{Absence of low latency cache:}
+	Which the GPU has none of.
+	\item{Register Spill Penalty:}
+	Which is much higher on the GPU due to their memory hierarchy.
+	This difference is also exacerbated by the lack of low latency caches for the threads in the GPU.
+\end{itemize}
+
+\subsection{CUDA Sorting}
+
+Satish \textit{et al.}\cite{Satish:2009:DES:1586640.1587667} report a design of high-performance parallel radix sort and merge sort routines for manycore GPUs through CUDA.
+They report up to 4x speedup on radix sorted compared to the graphics-based GPUSort, and 3.5x speedup compared to comparable routines on an 8-core 2.33GHz Intel Core2 Xeon system.
+
+Their mergesort also performs favorably, with roughly 2x speedup over GPUSort, and they report it being similarly faster than the CUDPP radix sort.
+
+They achieved these speedups through careful exposure of substantial fine-grained parallelism and decomposing independent computiational tasks that perform minimal communication.
+They report that they also had to smartly utilize the shared memory available on the GPU to achieve their results, even with the synchronization costs incurred.
+
+Their results are collected when run on a Nvidia GeForce 8800 Ultra, running on a PC with 2.13 GHZ Intel Core2 6400 CPU, 2GB main memory, and using a Linux 2.6.9 kernel OS.
 
 \subsection{Intel's Xeon Phi}
 
@@ -29,8 +80,10 @@ While Intel was not the first on the market with GPGPUs, they have in recent tim
 Newburn \textit{et al.}\cite{Newburn:2013:OCR:2510648.2511038} describe the utilization of, and evaluate the Intel Xeon Phi with several typical calculation heavy benchmarks with speedup comparison to only running on the CPU.
 
 While the transfer of memory to and from externally connected processing units such as GPGPUs on the PCI-Express bus is how the ``Memory Wall'' makes itself known to GPGPUs,
-the paper of Newburn \textit{et al.} shows that if the effort is made to write programs which implement the use of Xeon Phis, especially those that may be calculation heavy like Seismic, Astronomic, Physics, or Financial applications, can benefit from the use of a Xeon Phi.
+the paper of Newburn \textit{et al.}\cite{Newburn:2013:OCR:2510648.2511038} shows that if the effort is made to write programs which implement the use of Xeon Phis, especially those that may be calculation heavy like Seismic, Astronomic, Physics, or Financial applications, can benefit from the use of a Xeon Phi.
 
-The Xeon Phi does stand apart from the typical GPGPU, such as those of Nvidia and AMD, by virtue of being able to be utilized in the compilation of code, as well as not following the the typical threads/warps/blocks/grids/sm architecture as Nvidia and AMD do.
+They report results from 1.4x to 6.92x with offloading to the Xeon Phi when compared to running without, on a 2.6GHz Xeon E5-2670 Crown Pass platform running RHEL 6.2, kernel 2.6.32 64bit OS, with Pre-Production Intel Xeon Phi\texttrademark with 61 4-thread cores running at 1.09GHz, with 8GB memory.
+
+The Xeon Phi does stand apart from the typical GPGPU, such as those of Nvidia and AMD, by virtue of being able to be utilized in the compilation of code, as well as not following the the typical threads/warps/blocks/grids/SM architecture as Nvidia does.
 
 However, much like CUDA and OpenCL, the advantages of Intel's Xeon Phi heavily rely on the programmer utilizing the tools made available through the compiler.
