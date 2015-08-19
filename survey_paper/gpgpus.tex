@@ -1,0 +1,36 @@
+% !TEX root = ./survey_paper.tex
+
+\section{GPGPU Offloading}
+\label{sec:nvidia}
+
+This section first gives a brief introduction to GPGPUs, before continuing with introducing Nvidia's CUDA platform.
+The section then summarizes Suda \textit{et al.}'s\cite{Suda:2009:AGG:1509633.1509696} evaluation of the GPGPU (through CUDA) performance, comparing it with University of Tokyo's supercomputer T2k.
+It continues by summarize Satish \textit{et al.}'s\cite{Satish:2009:DES:1586640.1587667} design, implementation, and evaluation of sorting algorithms for Manycore GPUs.
+Finally, the section finishes with summarizing Newburn \textit{et al.}'s report describing the utilization and evaluation of Intel's Xeon Phi\texttrademark.
+
+\subsection{GPGPUs}
+
+The use of additional processing units has been a part of computer history, for as long as computers have had a history.
+In the beginning processing units were highly specialized, but over time the CPU emerged, and started to handle a wide array of different applications/programs.
+
+In the early years of ``external'' processing units connected to the motherboard containing the CPU, were more often than not Graphic Processing Units (GPUs).
+This was because of the heavy load graphical applications put on the CPU, and thereby slowed the whole system down.
+
+With Moore's law making the construction of more complex GPUs cheaper, and the discovery of better graphical algorithms, GPUs rose as the forefront example of accelerators available to more than the select few, very rich, companies.
+
+In later years, since the mid 2000s, GPUs have been promoted as General Purpose GPUs (GPGPUs), which with their efficient and cost-effective vector-operations can perform many more concurrent tasks concurrently than a CPU, given that the tasks are very similar to one another.
+
+\subsection{CUDA}
+
+\subsection{Intel's Xeon Phi}
+
+While Intel was not the first on the market with GPGPUs, they have in recent times focused heavily on the Intel Xeon Phi\texttrademark in the HPC market.
+
+Newburn \textit{et al.}\cite{Newburn:2013:OCR:2510648.2511038} describe the utilization of, and evaluate the Intel Xeon Phi with several typical calculation heavy benchmarks with speedup comparison to only running on the CPU.
+
+While the transfer of memory to and from externally connected processing units such as GPGPUs on the PCI-Express bus is how the ``Memory Wall'' makes itself known to GPGPUs,
+the paper of Newburn \textit{et al.} shows that if the effort is made to write programs which implement the use of Xeon Phis, especially those that may be calculation heavy like Seismic, Astronomic, Physics, or Financial applications, can benefit from the use of a Xeon Phi.
+
+The Xeon Phi does stand apart from the typical GPGPU, such as those of Nvidia and AMD, by virtue of being able to be utilized in the compilation of code, as well as not following the the typical threads/warps/blocks/grids/sm architecture as Nvidia and AMD do.
+
+However, much like CUDA and OpenCL, the advantages of Intel's Xeon Phi heavily rely on the programmer utilizing the tools made available through the compiler.

@@ -1,10 +1,12 @@
 % !TEX root = ./survey_paper.tex
 
-\section{CPU and Accelerator Offloading}
+\section{CPU Offloading}
 \label{sec:offloading}
 
 This section introduces Offloading, by first explaining the term, before explaining how parallel programs implement this, and their difficulties and limitations.
-Thereafter, we summarize the paper of Byun \textit{et al.}\cite{Byun:EECS-2012-215}, and explain how they offload the CPU, before we turn to Newburn \textit{et al.}\cite{Newburn:2013:OCR:2510648.2511038}, and summarize how they do it in a different manner.
+Thereafter, we summarize the paper of Byun \textit{et al.}\cite{Byun:EECS-2012-215}, and explain how they offload the CPU.
+
+\subsection{Offloading}
 
 Offloading is the alleviation of the workload of a program normally/otherwise run on a single agent, by having multiple sub-cores of the CPU, CPUs, or other processing units entirely execute some of the workload.
 By spreading the load, only possible with parallel programs, the total execution time of the program can be diminished, even with the bottlenecks from the ``Brick Wall'' affecting each CPU or CPU core (hereafter referred to as ``agents'', to avoid discriminating other processing units).
@@ -70,26 +72,3 @@ Besides the other technologies introduced in this paper, there are two widely us
 		It is however worth noticing that the two models are not mutually exclusive.
 		There is often much that can be gained, especially on CPUs, when the two are technologies and memory models combine their strengths.
 \end{itemize}
-
-\subsection{Offloading through Accelerators}
-
-The use of additional processing units has been a part of computer history, for as long as computers have had a history.
-In the beginning processing units were highly specialized, but over time the CPU emerged, and started to handle a wide array of different applications/programs.
-
-In the early years of ``external'' processing units connected to the motherboard containing the CPU, were more often than not Graphic Processing Units (GPUs).
-This was because of the heavy load graphical applications put on the CPU, and thereby slowed the whole system down.
-
-With Moore's law making the construction of more complex GPUs cheaper, and the discovery of better graphical algorithms, GPUs rose as the forefront example of accelerators available to more than the select few, very rich, companies.
-
-In later years, since the mid 2000s, GPUs have been promoted as General Purpose GPUs (GPGPUs), which with their efficient and cost-effective vector-operations can perform many more concurrent tasks concurrently than a CPU, given that the tasks are very similar to one another.
-
-While Intel was not the first on the market with GPGPUs, they have focused heavily on the Intel Xeon Phi\texttrademark.
-
-Newburn \textit{et al.}\cite{Newburn:2013:OCR:2510648.2511038} describe the utilization of, and evaluate the Intel Xeon Phi with several typical calculation heavy benchmarks with speedup comparison to only running on the CPU.
-
-While the transfer of memory to and from externally connected processing units such as GPGPUs on the PCI-Express bus is how the ``Memory Wall'' makes itself known to GPGPUs,
-the paper of Newburn \textit{et al.} shows that if the effort is made to write programs which implement the use of Xeon Phis, especially those that may be calculation heavy like Seismic, Astronomic, Physics, or Financial applications, can benefit from the use of a Xeon Phi.
-
-The Xeon Phi does stand apart from the typical GPGPU, such as those of Nvidia and AMD, by virtue of being able to be utilized in the compilation of code.
-
-However, much like CUDA introduced in Section~\ref{sec:nvidia} and OpenCL introduced in Section~\ref{sec:opencl}, the advantages of Intel's Xeon Phi heavily rely on the programmer utilizing the tools made available through the compiler.
