@@ -3,56 +3,54 @@
 \section{Cross-platform/Heterogeneous Parallel Programming}
 \label{sec:opencl}
 
-This section first introduces OpenCL, before comparing it quickly with CUDA and quickly introducing LLVM, before summarizing Magni \textit{et al.}'s\cite{Magni:2013:LCE:2503210.2503268} thread-coarsening optimization.
+This section first introduces OpenCL, before comparing it quickly with CUDA and quickly introducing LLVM, before summarizing Magni \textit{et al.}'s~\cite{Magni:2013:LCE:2503210.2503268} thread-coarsening optimization.
 
 \subsection{OpenCL}
 
-While the majority of parallel systems in the history of parallel programming and HPC have been homogeneous systems, systems like personal computer's CPU's and attached GPUs are heterogeneous system by their nature.
+While the majority of systems in the history of parallel programming and HPC have been homogeneous systems, systems like personal computer's CPUs and attached GPUs make a heterogeneous system by their combined nature.
 
 As such, the versatility of heterogeneous systems is much greater than homogeneous systems, but the efforts and difficulty necessary for their utilization can also be very great.
 
-\textit{Open Computing Language} (OpenCL)\texttrademark is an open standard for parallel programming of heterogeneous systems, created in an effort to alleviate the difficulty of effectively utilizing heterogeneous systems.
+\textit{Open Computing Language} (OpenCL)\texttrademark is an open standard for parallel programming of heterogeneous systems, created to alleviate the difficulty of effectively utilizing heterogeneous systems.
 This does not mean that OpenCL cannot be utilized to write programs for homogeneous systems/platforms, but in such cases it is often more efficient to write efficient code in the programming environment/language intended for said platform.
 
 OpenCL works in the fashion that code written in the C/C++ API and Kernel language is not compiled when written as most programs are.
 Rather, the compilation is performed at runtime, so as to be compiled to fit the \textit{Instruction Set Architecture} (ISA) on which it is executed.
 
-The Khronos group developing OpenCL state that OpenCL is meant to target supercomputers, embedded systems, mobile devices, and one ``code tree'' can be executed on CPUs, GPUs, \textit{Dynamic Signal Processors} (DSPs), \textit{Field Programmable Gate Arrays} (FPGAs), and hardware.
+The Khronos group developing OpenCL state that OpenCL is meant to target supercomputers, embedded systems, mobile devices, and that one ``code tree'' can be executed on CPUs, GPUs, \textit{Dynamic Signal Processors} (DSPs), \textit{Field Programmable Gate Arrays} (FPGAs), and hardware.
 
-As such, it requires kernels written as in CUDA to perform the computational tasks one wants to run on hardware besides the Host CPU executing the code, but being much more verbose than CUDA, it permits much more complicated systems with its API to decide on what systems the code should run, if available.
+As such, it requires kernels written as in CUDA to perform the computational tasks one wants to run on hardware besides the Host CPU executing the code but being much more verbose than CUDA, it permits much more complicated systems with its API to decide on what systems the code should run, if available.
 
-While writing programs in OpenCL greatly reduces the overhead of writing code per platform/language/hardware, writing optimial/optimized code still requires a per platform/hardware optimizations.
+While writing programs in OpenCL greatly reduces the overhead of writing code per platform/language/hardware, writing optimal/optimized code still requires manual platform/hardware specific optimizations.
 As such, many GPGPU developers choose to remain with the less verbose, and more easy to program CUDA platform, when writing GPGPU code.
 
-OpenCL is thus in many ways considered an alternative to CUDA, but an alternative that as opposed to CUDA is heterogeneous, cross-platform, which CUDA supports.
+OpenCL is thus in many ways considered an alternative to CUDA, but an alternative that as opposed to CUDA that supports heterogeneous/cross-platform end-targets, and which CUDA supports.
 
 So while OpenCL offers and supports more varied, and perhaps more versatile parallel programming,
 
 \subsection{LLVM}
 
-LLVM (former \textit{Low Level Virtual Machine}) is a compiler infrastructure designed to be a set of re-usable libraries with well-defined interfaces.
+LLVM (former \textit{Low-Level Virtual Machine}) is a compiler infrastructure designed to be a set of re-usable libraries with well-defined interfaces.
 
-While it has some support for better ease-of-use and general usability than GCC, while retaining fully compatible with GCCs compilation flags and commands, it has not yet matured to produce code as equally fast as GCC can.
+While it has some support for better ease-of-use and general usability than GCC, while retaining full compatibility with GCCs compilation flags and commands, it has not yet matured to produce code as equally fast as GCC can.
 
-Thus, it is often used by compilers supporting a multitude of languages during development of code, but then often discarded for GCC in the release version of the code when the language developed in is supported by GCC.
+Thus, while it is often used by compilers supporting a multitude of languages during development of code, it is then often discarded for GCC when producing the release version of the product, whenever GCC supports the language developed in.
 
-Being a back end compiler, LLVM was originally written to be a replacement for the existing code generator in the GCC stack.
+Being a back-end compiler, LLVM was originally written to be a replacement for the existing code generator in the GCC stack.
 LLVM currently supports C/C++, ADA, D, Delphi, Fortran, Objective-C, OpenGL Shading Language, Go, Haskell, Java Bytecode, Julia, Swift, Python Ruby, Rust Scala, C\# and more using various front ends.
 
 Among the most famous front end compilers using LLVM is Clang, a new compiler supporting C/C++ and Objective-C.
-Clang is very popular for its much more human-readable error messages, while full support of the language standards GCC supports.
+Clang is very popular for its much more human-readable error messages while still retaining full support of the language standards GCC supports.
 
 \subsection{Thread-Coarsening}
 
-Magni \textit{et al.}\cite{Magni:2013:LCE:2503210.2503268} report on a compiler transformation called \textit{thread-coarsening}, and evaluate its effects on across a range of devices using OpenCL compiled through LLVM.
+Magni \textit{et al.}~\cite{Magni:2013:LCE:2503210.2503268} report on a compiler transformation called \textit{thread-coarsening}, and evaluate its effects across a range of devices using OpenCL compiled through LLVM.
 
-They evaluate the transformation on 17 benchmarks and five platforms with a multitude of different parameters, achieving speedups over 9x on individual applications and average speedups ranging from 1.15x on the Nvidia Kepler GPU to 1.5x on the AMD Cypress GPU.
+They evaluate the transformation on 17 benchmarks and five platforms using a multitude of different parameters, achieving speedups over 9x on individual applications and average speedups ranging from 1.15x on the Nvidia Kepler GPU to 1.5x on the AMD Cypress GPU.
 
 They implement their benchmarks in OpenCL, and use LLVM as a source-to-source compiler, testing different thread-coarsening parameters during the cross-compilation.
 
-The premise of thread-coarsening is that instead of having each thread only do one thing per kernel call on GPGPUs, they have the threads perform the same operation, such as matrix transposition, on more than one data element per thread, all the while reducing the total number of threads.
-The reduction of total number of threads also free up more resources per thread, which helps in achieving the speedups gained by this transformation.
+The idea of thread-coarsening is that instead of having each thread only do one thing per kernel call on GPGPUs as traditionally done, they have the threads perform the same operation, such as matrix transposition, on more than one data element per thread, all the while reducing the total number of threads.
+The reduction of the total number of threads also frees up more resources per thread, which helps in achieving the speedups gained by this transformation.
 
-They also compare their GPGPU results form AMD Radeon HD 5900, AMD Tahiti 7970, Nvidia GTX 480, and Nvidia K20c with a Intel Core i7-3820 using a Linux kernel 3.1.10 for all but the 480, which uses 3.2.0 for OS.
-
-
+They also compare their GPGPU results from AMD Radeon HD 5900, AMD Tahiti 7970, Nvidia GTX 480, and Nvidia K20c with a Intel Core i7-3820 using a Linux kernel 3.1.10 for all but the 480, which uses 3.2.0 for OS.

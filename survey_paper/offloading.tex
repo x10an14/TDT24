@@ -4,11 +4,11 @@
 \label{sec:offloading}
 
 This section introduces Offloading, by first explaining the term, before explaining how parallel programs implement this, and their difficulties and limitations.
-Thereafter, we summarize the paper of Byun \textit{et al.}\cite{Byun:EECS-2012-215}, and explain how they offload the CPU.
+After that, we summarize the paper of Byun \textit{et al.}~\cite{Byun:EECS-2012-215}, and explain how they offload the CPU.
 
 \subsection{Offloading}
 
-Offloading is the alleviation of the workload of a program normally/otherwise run on a single agent, by having multiple sub-cores of the CPU, CPUs, or other processing units entirely execute some of the workload.
+Offloading is the alleviation of the workload of a program normally/otherwise run on a single agent, by having multiple sub-cores of the CPU, CPUs, or other processing units entirely execute some of the program's workload.
 By spreading the load, only possible with parallel programs, the total execution time of the program can be diminished, even with the bottlenecks from the ``Brick Wall'' affecting each CPU or CPU core (hereafter referred to as ``agents'', to avoid discriminating other processing units).
 
 Rather, if we generalize a simplified optimum case, one can propose that the amount of agents $P$, the time spent executing the program on a single agent $T_1$, gives the formula for the speedup gained by executing with the load distributed across $P$ agents to be $S_P = T_1/P$.
@@ -16,28 +16,28 @@ Rather, if we generalize a simplified optimum case, one can propose that the amo
 \subsection{Implementing Parallelism}
 
 However, since the formula $S_P = T_1/P$ is a simplified generalization of the optimum case, it gives a wrongful representation of $T_P$.
-While a program running on $P$ agents may approach the speedup given by $T_1/P$, it can never be equal to this, since then we would actually be running $P$ completely independent programs.
-Thus, Amdahl\cite{Amdahl:1967:VSP:1465482.1465560} proposed that each program needs to have a sequential part, such as the summing of the local sums from each agent in a parallel programming calculating a sum to a final result.
+While a program running on $P$ agents may approach the speedup given by $T_1/P$, it can never be equal to this, since then we would be running $P$ completely independent programs.
+Amdahl~\cite{Amdahl:1967:VSP:1465482.1465560} proposed that each program needs to have a sequential part, such as the summing of the local sums from each agent in a parallel programming calculating a sum to a final result.
 
-This gave rise to \textit{Amdahl's Law}, which states that the theoretical max speedup of a parallel program becomes the sequential part, plus the parallel part divided by the amount of agents (e.g. CPUs) executing the parallel part simultaneously.
+This gave rise to \textit{Amdahl's Law}, which states that the theoretical max speedup of a parallel program becomes the sequential part, plus the parallel part divided by a number of agents (e.g. CPUs) executing the parallel part simultaneously.
 Hence, Amdahl's law gives the formula $S_P \leq P/((P-1)T_S + 1)$, with $P$, $T_1$, $T_P$ representing the same as previously given, and $T_S$ the time it takes to execute the sequential parts of the program.
 
 Amdahl's law gives a bleak estimate of how much parallelizing a program can help its execution time.
-However, this bleak estimate is with one caveat, and that is that the formula pre-supposes a \textit{fixed} problem size speedup.
+However, this bleak estimate is with one caveat, and that is that the formula presupposes a \textit{fixed} problem size speedup.
 
-This did not escape the notice of Gustafson\cite{Gustafson:1988:RAL:42411.42415}, who proposed a new formula for calculating the theoretical max speedup of a parallel implementation, but with \textit{fixed} time and variable problem size speedup, as opposed to Amdahl's law.
+This did not escape the notice of Gustafson~\cite{Gustafson:1988:RAL:42411.42415}, who proposed a new formula for calculating the theoretical max speedup of a parallel implementation, but with \textit{fixed} time and variable problem size speedup, as opposed to Amdahl's law.
 Hence, \textit{Gustafson's Law} gives the formula: $S_P = P - T_S(P-1)$.
 
 Thus parallelizing programs still had more benefits to give, beyond what Amdahl's law proposed, as long as they increased the problem size along with the size of $P$.
 
-\textit{Sun and Ni's Law}\cite{Sun:1990:VPS:110382.110450,Sun2010183} proposes a third way to look at speedup in parallel programs, and that is $memory bounded$ speedup.
+\textit{Sun and Ni's Law}~\cite{Sun:1990:VPS:110382.110450,Sun2010183} proposes a third way to look at speedup in parallel programs, and that is $memory bounded$ speedup.
 
 Start by supposing that $f$ is the portion of workload that can be parallelized, and $(1-f)$ the sequential part.
 
 Given a memory bound function $G(P)$ representing the influence of memory change on the change in problem size, Sun and Ni's law give the following formula for calculating the speedup: $S_P = ((1-f)+f\times G(P))/((1-f)+\frac{f\times G(P)}{P})$.
 
-If $G(P)=1$ (our $G(P)$ being the function $\overline{g}(m)$ in Sun and Chen\cite{Sun2010183}), then the memory bounded speedup model reduces to Amdahl's law, since the problem size is fixed, or independent of resource increase.
-If $G(P)=n$, then the memory bounded speedup model reduces to Gustafson's law, which means that when memory capacity increases $m$ times, and the workload also increases $m$ times, all the data needed is local to every node in the system.
+If $G(P)=1$ (our $G(P)$ being the function $\overline{g}(m)$ in Sun and Chen~\cite{Sun2010183}), then the memory-bounded speedup model reduces to Amdahl's law, since the problem size is fixed, or independent of resource increase.
+If $G(P)=n$, then the memory-bounded speedup model reduces to Gustafson's law, which means that when memory capacity increases $m$ times, and the workload also increases $m$ times, all the data needed is local to every node in the system.
 
 Thus, Sun and Ni's law directly relates to, and shows how to solve, the ``Memory Wall'' explained in Section~\ref{sec:background}, on a parallel system with homogeneous agents.
 
@@ -45,32 +45,32 @@ Thus, Sun and Ni's law directly relates to, and shows how to solve, the ``Memory
 
 A CPU can run a program in parallel in several ways.
 It may have multiple cores, which each can run a process/program concurrently.
-In addition, a CPU core may have multiple threads running concurrently, depending on the hardware available.
-As such, the first parallel optimizations we report utilize threads and cores to enable their parallelism.
+Also, a CPU core may have multiple threads running concurrently, depending on the hardware available.
+The first report we summarize, utilizing parallel optimizations, utilizes threads and cores to enable the parallelism of their system.
 
-Byun \textit{et al.}\cite{Byun:EECS-2012-215} proposes a new parallel system: ``pOSKI'', which is a parallelization of the SpMV autotuning framework ``OSKI''.
+Byun \textit{et al.}~\cite{Byun:EECS-2012-215} proposes a new parallel system: ``pOSKI'', which is a parallelization of the SpMV autotuning framework ``OSKI''.
 SpMV performs traditionally poorly on single-core agents, due to the irregular memory accesses and the ``Memory Wall''.
 
-Parallel ``Oski'' (``pOSKI''), utilizes beforehand tuning knowledge to select proper compilation parameters, loop unrolling, and variable sizes to optimize the code, though this optimizations are also applicable on a single-core system.
+\textit{Parallel} ``OSKI'' (``pOSKI''), utilizes beforehand tuning knowledge to select proper compilation parameters, loop unrolling, and variable sizes to optimize the code, though these code optimizations are also applicable on a single-core system.
 On the other hand, mapping blocks of a matrix to singular threads running concurrently on a CPU, using \textit{Non-Uniform Memory Access} (NUMA) aware mapping of the matrix partitions to cores, and utilizing SIMD intrinsics to fully utilize the available ALUs to concurrently calculate more than one arithmetic operation, are parallel optimizations described in the report as utilized.
 
-While Byun \textit{et al.}\cite{Byun:EECS-2012-215} are among the more specialized papers in this survey, they do offer insights into the applicability of their parallel optimizations, noting that they do not always result in a speedup.
+While Byun \textit{et al.}~\cite{Byun:EECS-2012-215} are among the more specialized papers in this survey, they do offer insights into the applicability of their parallel optimizations, noting that they do not always result in a speedup.
 
 Their results are gathered from experiments on several different architectures and configurations, with numbers as high as 8.3x faster than the serial OSKI implementation, and as slow as 1.3x and 1.2x slower than the parallel Intel MKL and OpenMP implementations of the same SpMV on their test setups.
 
-\subsection{Shared Memory vs Distributed Memory}
+\subsection{Shared Memory vs. Distributed Memory}
 
 When discussing parallel programs, it's often important to mention whether the algorithm utilized by the program is implemented with regards to shared or distributed memory.
 
-Besides the other technologies introduced in this paper, there are two widely used technologies which we will not discuss in any other section, that are still worth mentioning.
+Besides the other technologies introduced in this paper, there are two widely used technologies that we do not discuss in any other section, but that are still worth mentioning.
 
 \begin{itemize}
 	\item{Shared Memory:}
-	Shared memory is when an multiple agents share the same memory during execution. Such as threads using the same process memory in a CPU core.
+	Shared memory is when multiple agents share the same memory during execution. Such as threads using the same process memory in a CPU core.
 	Threads are most commonly the technology referred to when discussing shared memory, and Pthreads, OpenMP, Intel's Building Blocks\texttrademark (TBB) are among the most used technologies to program algorithms relying on shared memory.
 	\item{Distributed Memory:}
-		Distributed memory however is when each agent has its own memory, inaccessible to other agents.
+		Distributed memory, however, is when each agent has its own memory, inaccessible to other agents.
 		CPUs being a good example of this model, MPI are among the most, of not the most known technology utilized when writing programs relying on the distributed memory model.
-		It is however worth noticing that the two models are not mutually exclusive.
+		It is, however, worth noticing that the two models are not mutually exclusive.
 		There is often much that can be gained, especially on CPUs, when the two technologies and memory models combine their strengths.
 \end{itemize}
